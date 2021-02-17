@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>ADD TEAM</title>
+<!-- Firebase -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+       <script src="js.js"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+    
+  </head>
+  <body>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.2.4/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+
+<a href="index.html" style="float: left;">HOME</a>
+<a href="vTeams.html" style="float: right;">View Teams</a>
+ <br/>
+    
+
+
+<!--BASIC -->
+ <div class="container" id="basic">
+ 
+    <center><h4>TEAM BASIC DETAILS</h4></center>
+    <br/>
+        <br/>
+
+    <div class="form-group">
+<input  type="text" name="tName" id="tName" value="" required/>
+              <label for="input" class="control-label">TEAM NAME</label><i class="bar"></i>
+            </div>  
+                  <br/>
+                  <div class="form-group" >
+                    <input  type="text" name="tTag" id="tTag" value=""/>
+                                  <label for="input" class="control-label">TEAM TAG</label><i class="bar"></i>
+                                </div> 
+                                <br/>
+                                <div class="form-group" >
+                                  <input  type="text" name="tCountry" id="tCountry" value=""/>
+                                                <label for="input" class="control-label">TEAM COUNTRY</label><i class="bar"></i>
+                                              </div> 
+                                              <br/>
+                                <div class="form-group" >
+                                  <input  type="text" name="tOrg" id="tOrg" placeholder="AF Insider*https://twitter.com/InsiderAf"/>
+                                                <label for="input" class="control-label">TEAM ORG (Name-Social link)</label><i class="bar"></i>
+                                              </div> 
+                                              <br/>
+                                              <div class="form-group" >
+                                                <input  type="text" name="tSocial" id="tSocial" placeholder="Twitter*https://twitter.com/InsiderAf"/>
+                                                              <label for="input" class="control-label">TEAM SOCIAL(Name-link)</label><i class="bar"></i>
+                                                            </div> 
+                                 <br/>
+     <input id="logos" type="file" name="logos" style="width:100%;" accept=".png, .jpg, .jpeg">
+        <progress value="0" max="100" id="uploader"></progress>
+      <div>
+            <div id="imagePreview">
+            <img id="img" width="100%" src="" style="display:none;">
+            </div>
+        </div>
+            <br/>
+            <br>
+            <div class="form-group" style="display:none;">
+<input  type="text" name="tLogo" id="tLogo" value="" readonly/>
+              <label for="input" class="control-label">tLogo</label><i class="bar"></i>
+            </div>               
+                  <br/>
+                  <center><div id="error" style="color:red; display:none;">Fill all details</div></center>
+     <center><button  class="button"  id="addTeam" onclick="basic()"><span>NEXT</span></button></center>
+<br/>
+          </div>
+
+
+          <!--MEMBERS -->
+ <div class="container" id="members" style="display:none;">
+ 
+  <center><h4>TEAM MEMBERS</h4></center>
+  <br/>
+      <br/>
+
+  <div class="form-group">
+<input  type="text" name="member1" id="member1" value="" required/>
+            <label for="input" class="control-label">TEAM CAPTAIN</label><i class="bar"></i>
+          </div>  
+                <br/>
+                <div class="form-group">
+                <input  type="text" name="member2" id="member2" value="" required/>
+            <label for="input" class="control-label">TEAM MEMBER 2</label><i class="bar"></i>
+          </div>  
+          <br/>
+          <div class="form-group">
+          <input  type="text" name="member3" id="member3" value="" required/>
+      <label for="input" class="control-label">TEAM MEMBER 3</label><i class="bar"></i>
+    </div>  
+    <br/>
+    <div class="form-group">
+    <input  type="text" name="member4" id="member4" value="" required/>
+<label for="input" class="control-label">TEAM MEMBER 4</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member5" id="member5" value="" />
+<label for="input" class="control-label">TEAM MEMBER 5</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member6" id="member6" value=""/>
+<label for="input" class="control-label">TEAM MEMBER 6</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member7" id="member7" value="" required/>
+<label for="input" class="control-label">TEAM MEMBER 7</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member8" id="member8" value="" required/>
+<label for="input" class="control-label">TEAM MEMBER 8</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member9" id="member9" value="" required/>
+<label for="input" class="control-label">TEAM MEMBER 9</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="member10" id="member10" value="" required/>
+<label for="input" class="control-label">TEAM MEMBER 10</label><i class="bar"></i>
+</div>  
+<br/>
+    <center><div id="error" style="color:red; display:none;">Fill all details</div></center>
+   <center><button  class="button" onclick="members()"><span>NEXT</span></button></center>
+<br/>
+        </div>
+
+
+
+        <!--ACHIEVEMENTS -->
+ <div class="container" id="achievements" style="display:none;">
+ 
+  <center><h4>TEAM ACHIEVEMENTS</h4></center>
+  <br/>
+      <br/>
+
+  <div class="form-group">
+<input  type="text" name="achievement1" id="achievement1" value="" required/>
+            <label for="input" class="control-label">ACHIEVEMENT 1</label><i class="bar"></i>
+          </div>  
+                <br/>
+                <div class="form-group">
+                <input  type="text" name="achievement2" id="achievement2" value="" required/>
+            <label for="input" class="control-label">ACHIEVEMENT 2</label><i class="bar"></i>
+          </div>  
+          <br/>
+          <div class="form-group">
+          <input  type="text" name="achievement3" id="achievement3" value="" required/>
+      <label for="input" class="control-label">ACHIEVEMENT 3</label><i class="bar"></i>
+    </div>  
+    <br/>
+    <div class="form-group">
+    <input  type="text" name="achievement4" id="achievement4" value="" required/>
+<label for="input" class="control-label">ACHIEVEMENT 4</label><i class="bar"></i>
+</div>  
+<br/>
+<div class="form-group">
+<input  type="text" name="achievement5" id="achievement5" value="" />
+<label for="input" class="control-label">ACHIEVEMENT 5</label><i class="bar"></i>
+</div> 
+<br/>
+    <center><div id="error" style="color:red; display:none;">Fill all details</div></center>
+   <center><button  class="button" onclick="addTeam()"><span>ADD TEAM</span></button></center>
+<br/>
+        </div>
+
+
+<script>
+  let tName = '';
+let tLogo = '';
+let tTag = '';
+let org = '';
+let tOrg = {};
+let tMembers = [];
+let tCountry = '';
+let tAchievements = [];
+let social = '';
+let tSocial = {};
+//for the image
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#img').attr({ src: e.target.result});
+            $('#imagePreview').hide();
+            $('#imagePreview').fadeIn(650);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$("#logos").change(function() {
+    readURL(this);
+});
+
+
+//to upload the image and get the download link for the image and display it in html
+var artup = document.getElementById('logos');
+var uploader = document.getElementById('uploader');
+artup.addEventListener('change', function(e){
+  var file = e.target.files[0];
+
+  var upart = firebase.storage().ref('logos/' + file.name);
+  var load = upart.put(file);
+  load.on('state_changed',
+  function progress(snapshot){
+    var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    uploader.value = percentage;
+  },
+  
+  //runs if there is an error in uploading
+    function error(err){
+      alert("error");
+    },
+
+    //runs when logos is uploaded
+    function complete(){
+      upart.getDownloadURL().then(function(url) {
+         document.getElementById('tLogo').value = url;
+        $("#img").attr({
+          src: url
+        });
+    },
+  )
+  document.getElementById('img').style.display="block";
+    });
+});
+
+
+
+
+
+function basic(){
+  tName = document.getElementById('tName').value;
+  tTag = document.getElementById('tTag').value;
+  tCountry = document.getElementById('tCountry').value;
+  org = document.getElementById('tOrg').value;
+  social = document.getElementById('tSocial').value;
+  tLogo = document.getElementById('tLogo').value;
+  if(org == '')
+  org = 'None';
+  if(org != ''){
+    let i = 0;
+    let flag = 0;
+    for(i=0;i<org.length;i++) {
+      if(org[i] =='*') {
+        flag = 1;
+        break;
+      }
+    }
+    if(flag==1) {
+     tOrg.name = org.substring(0,i);
+      tOrg.link = org.substring(i+1,org.length);
+    }
+    else
+    alert("Invalid ORG foramt");
+  }
+  if(social != ''){
+    let i = 0;
+    let flag = 0;
+    for(i=0;i<social.length;i++) {
+      if(social[i] =='*') {
+        flag = 1;
+        break;
+      }
+    }
+    if(flag==1) {
+     tSocial.name = social.substring(0,i);
+      tSocial.link = social.substring(i+1,social.length);
+    }
+    else
+    alert("Invalid Team Social foramt");
+  }
+  if(tName!='' && tTag!='' && tCountry!='' && tLogo!='') {
+document.getElementById('basic').style.display = "none";
+document.getElementById('members').style.display = "block";
+  }
+  else {
+    alert("Fill all details!!");
+  }
+// document.getElementById('basic').style.display = "none";
+// document.getElementById('members').style.display = "block";
+  }
+
+  function members(){
+    let i = 0;
+    let flag = 0;
+    for(i=1;i<=4;i++) {
+      if(document.getElementById('member'+i).value == '')
+      {flag = 1;
+        break;}
+      }
+
+      if(flag ==0)
+    for(i=1;i<=7;i++){
+      if(document.getElementById('member'+i).value == '')
+      break;
+      else
+      {
+        if(i==1)
+        tMembers.push(document.getElementById('member'+i).value +'(c)');
+        else
+        tMembers.push(document.getElementById('member'+i).value);
+      }
+      
+      document.getElementById('members').style.display = "none";
+document.getElementById('achievements').style.display = "block";
+    }
+    else
+    alert("Team must have at least 4 members")
+    
+    
+  }
+
+
+  function addTeam()
+{
+  let i =0;
+  for(i=1;i<=5;i++){
+      if(document.getElementById('achievement'+i).value == '')
+      break;
+      else
+      tAchievements.push(document.getElementById('achievement'+i).value);
+  }
+
+  let db = firebase.firestore();
+    db.collection("PUBGMteams").doc(tName).set({
+    name: tName,
+    tag: tTag,
+    country: tCountry,
+    logo: tLogo,
+    org: tOrg,
+    achievements: tAchievements,
+    members: tMembers,
+    social: tSocial,
+})
+.then(function() {
+  location.reload();
+})
+.catch(function(error) {
+    alert("Error adding team: ", error);
+});
+
+  }
+
+
+</script>
+  </body>
+</html>
