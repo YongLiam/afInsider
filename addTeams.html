@@ -51,6 +51,16 @@
                                                 <label for="input" class="control-label">TEAM COUNTRY</label><i class="bar"></i>
                                               </div> 
                                               <br/>
+                                              <div class="form-group" >
+                                                <input  type="text" name="tCode" id="tCode" placeholder="example: AE#234"/>
+                                                              <label for="input" class="control-label">TEAM UNIQUE CODE (tag#country_code)</label><i class="bar"></i>
+                                                            </div> 
+                                                            <br/>
+                                              <div class="form-group" >
+                                                <input  type="number" name="tEarnings" id="tEarnings" placeholder="Currency = $"/>
+                                                              <label for="input" class="control-label">TEAM TOTAL EARNINGS</label><i class="bar"></i>
+                                                            </div> 
+                                                            <br/>
                                 <div class="form-group" >
                                   <input  type="text" name="tOrg" id="tOrg" placeholder="AF Insider*https://twitter.com/InsiderAf"/>
                                                 <label for="input" class="control-label">TEAM ORG (Name-Social link)</label><i class="bar"></i>
@@ -89,7 +99,7 @@
       <br/>
 
   <div class="form-group">
-<input  type="text" name="member1" id="member1" value="" required/>
+<input  type="text" name="member1" id="member1" placeholder="IGN*link..... enter ! for link if no link" required/>
             <label for="input" class="control-label">TEAM CAPTAIN</label><i class="bar"></i>
           </div>  
                 <br/>
@@ -153,22 +163,22 @@
       <br/>
 
   <div class="form-group">
-<input  type="text" name="achievement1" id="achievement1" value="" required/>
+<input  type="text" name="achievement1" id="achievement1" placeholder="format = achievement name*link"/>
             <label for="input" class="control-label">ACHIEVEMENT 1</label><i class="bar"></i>
           </div>  
                 <br/>
                 <div class="form-group">
-                <input  type="text" name="achievement2" id="achievement2" value="" required/>
+                <input  type="text" name="achievement2" id="achievement2" value=""/>
             <label for="input" class="control-label">ACHIEVEMENT 2</label><i class="bar"></i>
           </div>  
           <br/>
           <div class="form-group">
-          <input  type="text" name="achievement3" id="achievement3" value="" required/>
+          <input  type="text" name="achievement3" id="achievement3" value=""/>
       <label for="input" class="control-label">ACHIEVEMENT 3</label><i class="bar"></i>
     </div>  
     <br/>
     <div class="form-group">
-    <input  type="text" name="achievement4" id="achievement4" value="" required/>
+    <input  type="text" name="achievement4" id="achievement4" value="" />
 <label for="input" class="control-label">ACHIEVEMENT 4</label><i class="bar"></i>
 </div>  
 <br/>
@@ -189,11 +199,15 @@ let tLogo = '';
 let tTag = '';
 let org = '';
 let tOrg = {};
+let Members = '';
 let tMembers = [];
 let tCountry = '';
+let achievements = '';
 let tAchievements = [];
 let social = '';
 let tSocial = {};
+let tEarnings = 0;
+let tCode = '';
 //for the image
   function readURL(input) {
     if (input.files && input.files[0]) {
@@ -254,9 +268,12 @@ function basic(){
   org = document.getElementById('tOrg').value;
   social = document.getElementById('tSocial').value;
   tLogo = document.getElementById('tLogo').value;
+  tCode = document.getElementById('tCode').value;
+  if(document.getElementById('tEarnings').value != '')
+  tEarnings = +document.getElementById('tEarnings').value;
   if(org == '')
   org = 'None';
-  if(org != ''){
+else{
     let i = 0;
     let flag = 0;
     for(i=0;i<org.length;i++) {
@@ -281,14 +298,31 @@ function basic(){
         break;
       }
     }
+
     if(flag==1) {
      tSocial.name = social.substring(0,i);
       tSocial.link = social.substring(i+1,social.length);
     }
     else
-    alert("Invalid Team Social foramt");
+    alert("Invalid Team Social format");
   }
-  if(tName!='' && tTag!='' && tCountry!='' && tLogo!='') {
+
+  if(tCode != ''){
+    let i = 0;
+    let flag = 0;
+    for(i=0;i<tCode.length;i++) {
+      if(tCode[i] =='#') {
+        flag = 1;
+        break;
+      }
+    }
+    if(flag!=1) {
+     tCode = '';
+     alert("Invalid Team Code format");
+    }
+    
+  }
+  if(tName!='' && tTag!='' && tCountry!='' && tLogo!='' && tCode != '') {
 document.getElementById('basic').style.display = "none";
 document.getElementById('members').style.display = "block";
   }
@@ -308,20 +342,43 @@ document.getElementById('members').style.display = "block";
         break;}
       }
 
-      if(flag ==0)
+      if(flag ==0) {
+        let flagg = 0;
     for(i=1;i<=7;i++){
-      if(document.getElementById('member'+i).value == '')
-      break;
+      Members = document.getElementById('member'+i).value;
+      if(Members != ''){
+      let j = 0;
+    let flag = 0;
+
+      if(Members.includes('*')) {
+        let mem = {
+          name: '',
+          link: ''
+        }
+        for(j=0;Members[j]!='*'; j++);
+      if(Members.substring(j+1,Members.length) == '!' || Members.substring(j+1,Members.length) == '')
+      mem.link = '#';
       else
-      {
+      mem.link = Members.substring(j+1,Members.length);
         if(i==1)
-        tMembers.push(document.getElementById('member'+i).value +'(c)');
+        mem.name = (Members.substring(0,j) +' (c)');
         else
-        tMembers.push(document.getElementById('member'+i).value);
-      }
-      
+        mem.name = Members.substring(0,j);
+        
+        tMembers.push(mem);
+    }
+    else
+    {
+      flagg = 1;
+      alert('Invalid Member ' +i +' format');
+      break;
+  }
+}
+    }
+      if(flagg == 0){
       document.getElementById('members').style.display = "none";
 document.getElementById('achievements').style.display = "block";
+      }
     }
     else
     alert("Team must have at least 4 members")
@@ -332,31 +389,73 @@ document.getElementById('achievements').style.display = "block";
 
   function addTeam()
 {
-  let i =0;
-  for(i=1;i<=5;i++){
-      if(document.getElementById('achievement'+i).value == '')
-      break;
-      else
-      tAchievements.push(document.getElementById('achievement'+i).value);
-  }
+  let flagg = 0;
+    for(i=1;i<=5;i++){
+      achievements = document.getElementById('achievement'+i).value;
+      let j = 0;
+    let flag = 0;
 
-  let db = firebase.firestore();
-    db.collection("PUBGMteams").doc(tName).set({
+      if(achievements.includes('*')) {
+        let aLink = '';
+        let aName = '';
+        for(j=0; achievements[j] != '*'; j++);
+      if(achievements.substring(j+1,achievements.length) == '!' || achievements.substring(j+1,achievements.length) == '')
+      aLink = '#';
+      else
+      aLink = achievements.substring(j+1,achievements.length);
+        aName = achievements.substring(0,j);
+
+        let ach = {
+          name: aName,
+          link: aLink
+        }
+        tAchievements.push(ach);
+       }
+    else if(achievements != "")
+    {
+      flagg = 1;
+      alert("Invalid Achievement " +i + " format");
+      break;
+  }
+    }
+      if(flagg == 0){
+        let db = firebase.firestore();
+        db.collection("PUBGMteamsBasic").doc(tCode).get().then((doc) => {
+    if (doc.exists) {
+        alert("Existing team found with same team code!!! Please change the team code");
+    } else {
+      db.collection("PUBGMteams").doc(tCode).set({
     name: tName,
     tag: tTag,
     country: tCountry,
     logo: tLogo,
+    earnings: tEarnings,
+    code: tCode,
     org: tOrg,
     achievements: tAchievements,
     members: tMembers,
     social: tSocial,
 })
 .then(function() {
-  location.reload();
+  db.collection("PUBGMteamsBasic").doc(tCode).set({
+    name: tName,
+    country: tCountry,
+    logo: tLogo,
+    members: tMembers,
+}).then(function() {
+    location.reload();
+})
+
 })
 .catch(function(error) {
     alert("Error adding team: ", error);
 });
+    }
+}).catch((error) => {
+    alert("Error checking existing team:", error);
+});
+      
+}
 
   }
 
