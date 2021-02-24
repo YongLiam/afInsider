@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>SCRYPTED LCS</title>
+<!-- Firebase -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+       <script src="js.js"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+    
+  </head>
+  <body>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.2.4/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+<ul>
+  <li><a class="active" href="index.html">Home</a></li>
+  <li><a href="addTeams.html">Add_Team</a></li>
+  <li><a href="transfer.html">Transfer</a></li>
+  <li><a href="modifyTeam.html" style="color: red;">Modify_Team</a></li>
+</ul>
+
+ <br/>
+ <br/>
+ <br/>
+ <br/>
+ <br/>
+ <br/>
+
+
+<!-- Add Team div -->
+ <div class="container" id="addTeamDiv">
+ 
+    <center><img style="border-radius:50%;" src="https://firebasestorage.googleapis.com/v0/b/afinsider-ea483.appspot.com/o/logos%2FafInsider.jpg?alt=media&token=261549a0-34af-4960-ab80-00e0e9450638" width="200px"> <br>AF ESPORTS INSIDER</center>
+    <br/>
+        <br/>
+
+    
+          </div>
+  </body>
+  <script>
+     let pass = "";
+  let db = firebase.firestore();
+   db.collection("users").doc("Scrypted").get().then(function(doc){
+    pass =  doc.data().pass;
+   })
+  </script>
+</html>
