@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>TRANSFER</title>
+<!-- Firebase -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+       <script src="js.js"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+    
+  </head>
+  <style>
+    /*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+input {
+  border: 1px solid #8F4299;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+
+.autocomplete-items {
+  position: relative;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #8F4299;
+  color: white; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: #8F4299 !important; 
+  color: #ffffff; 
+}
+
+  </style>
+  <body>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.2.4/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="addTeams.html">Add_Team</a></li>
+  <li><a class="active" href="transfer.html">Transfer</a></li>
+  <li><a href="modifyTeam.html" style="color: red;">Modify_Team</a></li>
+</ul>
+
+ <br/>
+ <br/>
+    
+ 
+
+<!-- View Team div -->
+<div autocomplete="off" class="container" style="max-width: 90rem;">
+  <div class="autocomplete">
+      <div id="rows[1]" style="margin-bottom: 5px;">
+        <input id="srcTeam" type="text" value="" style="width: 30%; text-align: center;" placeholder="Old Team Code (0 for none)">
+        <input id="pName" type="text" placeholder="Player Name" style="width: 35%; background: #9E0004; color: white;">
+        <input id="desTeam" type="text" placeholder="New Team Code" style="width: 30%;">
+      </div>
+<button  class="button" onclick="transfer()"><span>TRANSFER</span></button>
+  </div>
+  <br/>
+  <br/>
+</div>
+ 
+  
+  
+<script>
+  let db = firebase.firestore();
+  let flag = 0;
+  let i = 0;
+function transfer()
+{ 
+  let members = [];
+  let newMembers = [];
+let pName = document.getElementById("pName").value;
+let srcTeam = document.getElementById("srcTeam").value;
+let desTeam = document.getElementById("desTeam").value;
+if(pName!='' && srcTeam != '' && desTeam != '')
+{
+  if(srcTeam != '0')
+  {
+    db.collection("PUBGMteams").doc(srcTeam).get().then(function(doc) {
+      if(doc.data() != undefined)
+      members.push(...doc.data().members);
+      else{
+      alert("Old Team not found !!");
+      location.reload();
+      }
+}).then(function(){
+  db.collection("PUBGMteams").doc(desTeam).get().then(function(doc) {
+      if(doc.data() != undefined)
+      newMembers.push(...doc.data().members);
+      else{
+      alert("New Team not found !!");
+      }
+}).then(function(){
+  for(i =0; i<members.length; i++) {
+  if(members[i].name == pName) {
+    flag = 1;
+    break;
+  }
+  }
+  if(flag == 1){
+    newMembers.push(members[i]);
+    members.splice(i, 1);
+    db.collection("PUBGMteams").doc(srcTeam).update({
+      members: members
+    }).then(function(){
+      db.collection("PUBGMteams").doc(desTeam).update({
+        members: newMembers
+      })
+    }).then(function() {
+      alert("Transfer Successful!!!")
+      location.reload();
+    });
+  }
+  else
+  alert("Player not found in old team!!!")
+});
+});
+  }
+
+  else {
+  db.collection("PUBGMteams").doc(desTeam).get().then(function(doc) {
+      if(doc.data() != undefined)
+      newMembers.push(...doc.data().members);
+      else{
+      alert("New Team not found !!");
+      location.reload();
+      }
+}).then(function(){
+    let pLink = prompt("Enter player social link:");
+    if(pLink == '')
+    pLink = '#';
+   let pDet =  {
+      name: pName,
+      link: pLink
+    };
+    newMembers.push(pDet);
+      db.collection("PUBGMteams").doc(desTeam).update({
+        members: newMembers
+      }).then(function() {
+      alert("Transfer Successful!!!");
+      location.reload();
+    });
+  });
+
+}
+}
+else
+alert("Player Name, Old Team, or New Team Empty!!!");
+}
+
+
+</script>
+  </body>
+</html>
