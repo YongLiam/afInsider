@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>ADD ACHIEVEMENT</title>
+<!-- Firebase -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+       <script src="js.js"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+    
+  </head>
+  <style>
+    /*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+input {
+  border: 1px solid #8F4299;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+
+.autocomplete-items {
+  position: relative;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #8F4299;
+  color: white; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: #8F4299 !important; 
+  color: #ffffff; 
+}
+
+  </style>
+  <body>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.2.4/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="addTeams.html">Add_Team</a></li>
+  <li><a href="transfer.html">Transfer</a></li>
+  <li><a href="modifyTeam.html" style="color: red;">Modify_Team</a></li>
+</ul>
+
+ <br/>
+ <br/>
+    
+ 
+
+<!-- View Team div -->
+<div autocomplete="off" class="container" style="max-width: 90rem;">
+  <div class="autocomplete">
+      <div id="rows[1]" style="margin-bottom: 5px;">
+        <input id="tCode" type="text" value="" style="width: 30%; text-align: center;" placeholder="Team Code">
+        <input id="achievement" type="text" placeholder="Achievement" style="width: 35%; background: #9E0004; color: white;">
+        <input id="aLink" type="text" placeholder="Link" style="width: 30%;">
+      </div>
+<button  class="button" onclick="addAchievement()"><span>ADD</span></button>
+  </div>
+  <br/>
+  <br/>
+</div>
+ 
+  
+  
+<script>
+  let achievement = '';
+let tAchievement = [];
+let tCode = '';
+let aLink = '';
+  let db = firebase.firestore();
+function addAchievement()
+{ 
+tCode = document.getElementById("tCode").value;
+achievement = document.getElementById("achievement").value;
+aLink = document.getElementById("aLink").value;
+if(tCode!='' && achievement != '' && aLink != '' )
+{
+  db.collection("PUBGMteams").doc(tCode).get().then(function(doc) {
+      if(doc.data() != undefined)
+      tAchievement.push(...doc.data().achievements);
+      else{
+      alert("Team code not recognized!!");
+      location.href="index.html";
+      }
+}).then(function(){
+   let aDet =  {
+      name: achievement,
+      link: aLink
+    };
+    tAchievement.push(aDet);
+      db.collection("PUBGMteams").doc(tCode).update({
+        achievements: tAchievement
+      }).then(function() {
+      alert("Achievement added!!");
+      location.href="index.html";
+    });
+  });
+
+}
+else
+alert("Fill all fields");
+}
+
+
+</script>
+  </body>
+</html>

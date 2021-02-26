@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <title>EDIT TEAM</title>
+<!-- Firebase -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+       <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+       <script src="js.js"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+    
+  </head>
+  <body onload="getTeam()">
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.2.4/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="addTeams.html">Add_Team</a></li>
+  <li><a href="transfer.html">Transfer</a></li>
+  <li><a class="active" href="modifyTeam.html" style="color: white;">Modify_Team</a></li>
+</ul>
+
+ <br/>
+ <br/>
+    
+
+
+<!--BASIC -->
+ <div class="container" id="basic" style="visibility:hidden;">
+ 
+    <center><h4>TEAM BASIC DETAILS</h4></center>
+    <br/>
+        <br/>
+
+    <div class="form-group">
+<input  type="text" name="tName" id="tName" value="" required/>
+              <label for="input" class="control-label">TEAM NAME</label><i class="bar"></i>
+            </div>  
+                  <br/>
+                  <div class="form-group" >
+                    <input  type="text" name="tTag" id="tTag" value=""/>
+                                  <label for="input" class="control-label">TEAM TAG</label><i class="bar"></i>
+                                </div> 
+                                <br/>
+                                <div class="form-group" >
+                                  <input  type="text" name="tCountry" id="tCountry" value=""/>
+                                                <label for="input" class="control-label">TEAM COUNTRY</label><i class="bar"></i>
+                                              </div> 
+                                              <br/>
+                                              <div class="form-group" >
+                                                <input  type="text" name="tCode" id="tCode" readonly/>
+                                                              <label for="input" class="control-label">TEAM UNIQUE CODE (tag#country_code)</label><i class="bar"></i>
+                                                            </div> 
+                                                            <br/>
+                                              <div class="form-group" >
+                                                <input  type="number" name="tEarnings" id="tEarnings" placeholder="Currency = $"/>
+                                                              <label for="input" class="control-label">TEAM TOTAL EARNINGS</label><i class="bar"></i>
+                                                            </div> 
+                                                            <br/>
+                                <div class="form-group" >
+                                  <input  type="text" name="tOrg" id="tOrg" placeholder="AF Insider*https://twitter.com/InsiderAf"/>
+                                                <label for="input" class="control-label">TEAM ORG (Name-Social link)</label><i class="bar"></i>
+                                              </div> 
+                                              <br/>
+                                              <div class="form-group" >
+                                                <input  type="text" name="tSocial" id="tSocial" placeholder="Twitter*https://twitter.com/InsiderAf"/>
+                                                              <label for="input" class="control-label">TEAM SOCIAL(Name-link)</label><i class="bar"></i>
+                                                            </div> 
+                                 <br/>
+     <input id="logos" type="file" name="logos" style="width:100%;" accept=".png, .jpg, .jpeg">
+        <progress value="0" max="100" id="uploader"></progress>
+      <div>
+            <div id="imagePreview">
+            <img id="img" width="100%" src="" style="display:none;">
+            </div>
+        </div>
+            <br/>
+            <br>
+            <div class="form-group" style="display:none;">
+<input  type="text" name="tLogo" id="tLogo" value="" readonly/>
+              <label for="input" class="control-label">tLogo</label><i class="bar"></i>
+            </div>               
+                  <br/>
+                  <center><div id="error" style="color:red; display:none;">Fill all details</div></center>
+     <center><button  class="button"  id="addTeam" onclick="updateTeam()"><span>UPDATE</span></button></center>
+<br/>
+          </div>
+
+
+ 
+
+
+<script>
+  let tName = '';
+let tLogo = '';
+let tTag = '';
+let org = '';
+let tOrg = {};
+let tCountry = '';
+let social = '';
+let tSocial = {};
+let tEarnings = 0;
+let tCode = '';
+let team = '';
+let db = firebase.firestore();
+
+function getTeam() {
+team = prompt("Enter Team Code:");
+db.collection("PUBGMteams").doc(team).get().then(function(doc) {
+  if(doc.data() != undefined) {
+    document.getElementById('tName').value = doc.data().name;
+    document.getElementById('tTag').value = doc.data().tag;
+  document.getElementById('tCountry').value = doc.data().country;
+  document.getElementById('tOrg').value = doc.data().org.name + '*' + doc.data().org.link;
+  document.getElementById('tSocial').value = doc.data().social.name + '*' + doc.data().social.link;
+  document.getElementById('tLogo').value = doc.data().logo;
+ document.getElementById('tCode').value = doc.data().code;
+  document.getElementById('tEarnings').value = doc.data().earnings;
+  document.getElementById("basic").style.visibility = 'visible';
+  }
+  else {
+    alert("Team code not recognized !!!");
+    location.href = "index.html";
+  }
+})
+}
+//for the image
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#img').attr({ src: e.target.result});
+            $('#imagePreview').hide();
+            $('#imagePreview').fadeIn(650);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$("#logos").change(function() {
+    readURL(this);
+});
+
+
+//to upload the image and get the download link for the image and display it in html
+var artup = document.getElementById('logos');
+var uploader = document.getElementById('uploader');
+artup.addEventListener('change', function(e){
+  var file = e.target.files[0];
+
+  var upart = firebase.storage().ref('logos/' + file.name);
+  var load = upart.put(file);
+  load.on('state_changed',
+  function progress(snapshot){
+    var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    uploader.value = percentage;
+  },
+  
+  //runs if there is an error in uploading
+    function error(err){
+      alert("error");
+    },
+
+    //runs when logos is uploaded
+    function complete(){
+      upart.getDownloadURL().then(function(url) {
+         document.getElementById('tLogo').value = url;
+        $("#img").attr({
+          src: url
+        });
+    },
+  )
+  document.getElementById('img').style.display="block";
+    });
+});
+
+
+
+
+
+function updateTeam(){
+  tName = document.getElementById('tName').value;
+  tTag = document.getElementById('tTag').value;
+  tCountry = document.getElementById('tCountry').value;
+  org = document.getElementById('tOrg').value;
+  social = document.getElementById('tSocial').value;
+  tLogo = document.getElementById('tLogo').value;
+  tCode = document.getElementById('tCode').value;
+  if(document.getElementById('tEarnings').value != '')
+  tEarnings = +document.getElementById('tEarnings').value;
+  if(org == '')
+  org = 'None*#';
+else{
+    let i = 0;
+    let flag = 0;
+    for(i=0;i<org.length;i++) {
+      if(org[i] =='*') {
+        flag = 1;
+        break;
+      }
+    }
+    if(flag==1) {
+     tOrg.name = org.substring(0,i);
+      tOrg.link = org.substring(i+1,org.length);
+    }
+    else
+    alert("Invalid ORG format");
+  }
+  if(social != ''){
+    let i = 0;
+    let flag = 0;
+    for(i=0;i<social.length;i++) {
+      if(social[i] =='*') {
+        flag = 1;
+        break;
+      }
+    }
+
+    if(flag==1) {
+     tSocial.name = social.substring(0,i);
+      tSocial.link = social.substring(i+1,social.length);
+    }
+    else
+    alert("Invalid Team Social format");
+  }
+
+  
+  if(tName!='' && tTag!='' && tCountry!='' && tLogo!='') {
+    db.collection("PUBGMteams").doc(tCode).update({
+    name: tName,
+    tag: tTag,
+    country: tCountry,
+    logo: tLogo,
+    earnings: tEarnings,
+    code: tCode,
+    org: tOrg,
+    social: tSocial,
+})
+.then(function() {
+  db.collection("PUBGMteamsBasic").doc(tCode).set({
+    name: tName,
+    country: tCountry,
+    logo: tLogo,
+    code: tCode,
+}).then(function() {
+  alert("Team updated !!");
+    location.href = "index.html";
+})
+
+})
+.catch(function(error) {
+    alert("Error updating team: ", error);
+});
+
+  }
+  else {
+    alert("Fill all details!!");
+  }
+
+  }
+
+
+</script>
+  </body>
+</html>
