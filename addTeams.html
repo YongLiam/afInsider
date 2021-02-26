@@ -278,8 +278,7 @@ function basic(){
   if(document.getElementById('tEarnings').value != '')
   tEarnings = +document.getElementById('tEarnings').value;
   if(org == '')
-  org = 'None';
-else{
+  org = 'None*#';
     let i = 0;
     let flag = 0;
     for(i=0;i<org.length;i++) {
@@ -294,7 +293,7 @@ else{
     }
     else
     alert("Invalid ORG format");
-  }
+  
   if(social != ''){
     let i = 0;
     let flag = 0;
